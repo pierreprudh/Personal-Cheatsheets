@@ -1072,18 +1072,117 @@ np.random.seed(42)  # 42 = openai generated 99% of the time
 ---
 
 # **11. Handy Snippets for Data Science**
-## 11.1 Timing code  
+
+
+A collection of **small code snippets** frequently used in Data Science projects that I will be using in the future
+
+
+## 11.1 Timing Code
+
+Measure execution time
+
+```python
+import time
+
+start = time.time()
+# code to benchmark
+
+# Model.train(...)
+
+elapsed = time.time() - start
+```
+ 
 ## 11.2 Sorting objects  
+
+#### Sorting a list
+```python
+nums = [3, 1, 4, 2]
+sorted(nums)
+```
+
+#### Sorting dictionaries / objects
+```python
+users = [
+    {"name": "Alice", "age": 30},
+    {"name": "Bob", "age": 25}
+]
+
+sorted(users, key=lambda x: x["age"])
+```
+
 ## 11.3 Counters & frequencies  
-## 11.4 Working with paths (`pathlib`)  
+
+You have access to Collections library and you can use counter to count items
+
+```python
+from collections import Counter
+
+words = ["data", "science", "data"]
+Counter(words)
+```
+
+## 11.4 Environment Variables  
+
+When you create a `.env` file to store all your API keys you can access them with os library or with the `dotenv library`
+
+#### `Os`
+
+```python
+import os
+
+api_key = os.getenv("API_KEY")
+```
+
+#### `Dotenv`
+
+```python
+found_env = find_dotenv(filename=".env", usecwd=True)
+if found_env:
+    load_dotenv(found_env)
+```
 
 ---
 
-# **12. To-Do (Future Sections)**
-- Python typing (`typing`)  
-- Virtual environments  
-- Unit testing  
-- Logging  
-- Multiprocessing  
+# **12. Virtual Environments**
 
----
+Virtual environments isolate project dependencies and Python versions, very usefull when working with version dependant library
+
+## 12.1 Why Use Virtual Environments?
+
+- Avoid dependency conflicts
+- Reproduce experiments easily
+- Share projects safely (requirements.txt)
+
+## 12.2 Creating a Virtual Environment
+
+### Using `venv` (standard library/name)
+
+```bash
+python -m venv .venv
+```
+
+## 12.3 Activating the Environment
+
+```bash
+.venv\Scripts\activate.bat  # Windows 
+
+source .venv/bin/activate   # MacOs/Linux
+```
+
+for deactivation 
+
+> deactivate
+
+## 12.3 Dependencies management
+
+### Saving Dependencies
+
+```bash
+pip freeze > requirements.txt
+```
+
+### Reinstalling Dependencies
+
+```bash
+pip install -r requirements.txt
+```
