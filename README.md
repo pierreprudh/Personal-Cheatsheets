@@ -26,8 +26,8 @@ Track learning progress over time
   |  └── examples.ipynb
   |
   ├── 2 - Data Manipulation
-  |  ├── 
-  |  └── 
+  |  ├── Data_manipulation_cheatsheet.md
+  |  └── examples.ipynb
   |
   ├── Large Language Model
   |  └── Questions&Answers.md
