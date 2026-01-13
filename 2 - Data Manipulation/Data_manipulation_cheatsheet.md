@@ -358,31 +358,338 @@ df.sort_values(["sepal length (cm) ", "petal length (cm)"], ascending=[True, Fal
 ---
 
 # **4. Data Cleaning**
+
+Real-world datasets are messy.  
+This section covers the most common **data cleaning operations** in pandas.
+
 ## 4.1 Missing Values  
+
+### Detect Missing Values
+
+```python
+df.isna().sum()
+df.isnull().sum()
+```
+
+
+### Drop Missing Values
+
+Drop rows with at least one missing value :
+
+```python
+df.dropna()
+```
+
+### Drop columns :
+```python
+df.dropna(axis=1)
+```
+
+Can be good for fast prototyping or quick models but you will lose data so precision on your model so it's better to fill those values with rules or statistics.
+
+
+### Fill Missing Values
+
+```python
+df.fillna(0)
+```
+
+#### With statistics :
+```python
+df["sepal length (cm)"].fillna(df["sepal length (cm)"].mean())
+```
+
+Classic is mean/median if you don't want to add bias to your model towards this column
+
+### Forward / backward fill (time series):
+```python
+df.fillna(method="ffill")
+df.fillna(method="bfill")
+```
+
 ## 4.2 Duplicates  
+
+Sometimes you will also face dataset with duplicates values so you can drop if that doesn't impact your model outcome !
+
+### Detect Duplicates
+```python
+df.duplicated().sum()
+```
+
+### Remove Duplicates
+```python
+df.drop_duplicates()
+```
+
+### Based on specific columns:
+```python
+df.drop_duplicates(subset=["user_id"])
+```
+
 ## 4.3 Type Conversion  
+
+Be careful of your columns type they can be disguised as numerical but still can be saved as string
+
+> Check Types
+> ``df.dtypes``
+
+### Convert Types
+```python
+df["sepal length (cm)"] = df["sepal length (cm)"].astype(int)
+```
+
+### Safe conversion:
+```python
+df["sepal length (cm)"] = pd.to_numeric(df["sepal length (cm)"], errors="coerce")
+```
+
+### Datetime Conversion
+
+Most of the time they will be stored as characters
+```python
+df["date"] = pd.to_datetime(df["date"])
+```
+
 ## 4.4 String Operations  
+
+Using those operations to create the ideal format (ex: put all the date into the good format before conversion)
+
+### String methods via .str accessor
+
+```python
+df["name"].str.lower()
+df["name"].str.strip()
+df["name"].str.contains("john")
+```
+
+Replace values :
+
+```python
+df["city"] = df["city"].str.replace(" ", "_")
+```
 
 ---
 
 # **5. Data Transformation**
+
+Data transformation is about **creating, modifying, and enriching features**.
+
 ## 5.1 Applying Functions  
+
+### Apply a function to a column
+
+```python
+df["age_squared"] = df["age"].apply(lambda x: x ** 2)
+```
+
+### Apply to multiple columns
+```python
+df[["age", "income"]].apply(np.mean)
+```
+
 ## 5.2 `apply`, `map`, `applymap`  
+
+### ``map`` (Series only)
+```python
+df["city_code"] = df["city"].map({
+    "Paris": 1,
+    "London": 2
+})
+```
+
+### ``apply`` (Series or DataFrame)
+```python
+df["income_k"] = df["income"].apply(lambda x: x / 1000)
+```
+
+**Row-wise :**
+
+```python
+df.apply(lambda row: row["age"] * row["income"], axis=1)
+```
+
+### ``applymap`` (DataFrame element-wise)
+
+```python
+df.applymap(lambda x: str(x).lower())
+```
+
 ## 5.3 Creating New Features  
+
+### Conditional Features
+```python
+df["is_senior"] = df["age"] > 60
+```
+
+### Binning / Discretization
+
+```python
+df["age_group"] = pd.cut(
+    df["age"],
+    bins=[0, 18, 35, 60, 100],
+    labels=["child", "young", "adult", "senior"]
+)
+```
+
+### Combining Columns
+
+```python
+df["full_name"] = df["first_name"] + " " + df["last_name"]
+```
 
 ---
 
 # **6. Grouping & Aggregation**
-## 6.1 `groupby` Basics  
+
+Grouping allows you to **split data**, **apply aggregations**, and **combine results**.
+
+## 6.1 `groupby` Basics
+
+### Group data by a column :
+
+```python
+df.groupby("city")
+```
+
+### Apply a single aggregation :
+
+```python
+df.groupby("city")["income"].mean()
+```
+
+### Group by Multiple Columns
+
+```python
+df.groupby(["city", "gender"])["income"].mean()
+```
+
 ## 6.2 Aggregation Functions  
+
+### Common aggregations :
+
+```python
+df.groupby("city")["income"].agg("mean")
+```
+
+### Multiple functions :
+
+```python
+df.groupby("city")["income"].agg(["mean", "min", "max"])
+```
+
+### Rename output columns :
+```python
+df.groupby("city")["income"].agg(
+    avg_income="mean",
+    max_income="max"
+)
+```
+
 ## 6.3 Multiple Aggregations  
+
+### Aggregating Multiple Columns
+```python
+df.groupby("city").agg({
+    "income": "mean",
+    "age": "median"
+})
+```
+
+### Resetting Index
+
+``groupby`` returns a DataFrame with grouped columns as index
+```python
+summary = df.groupby("city")["income"].mean().reset_index()
+```
+
+### Filtering Groups
+
+Keep only groups meeting a condition :
+
+```python
+df.groupby("city").filter(lambda x: len(x) > 10)
+```
 
 ---
 
 # **7. Merging & Joining**
+
+Merging and joining are used to **combine multiple datasets**
+This is equivalent to SQL joins and is very common 
+
+
 ## 7.1 `merge`  
+
+`merge` combines DataFrames based on one or more keys.
+
+### Basic Merge
+
+```python
+df_merged = pd.merge(df_left, df_right, on="id")
+```
+
+Merge with Different Key Names
+
+```python
+pd.merge(
+    df_left,
+    df_right,
+    left_on="user_id",
+    right_on="id"
+)
+```
+
+Join Types
+
+```python
+pd.merge(df_left, df_right, on="id", how="inner")
+pd.merge(df_left, df_right, on="id", how="left")
+pd.merge(df_left, df_right, on="id", how="right")
+pd.merge(df_left, df_right, on="id", how="outer")
+```
+
+**Recap**
+
+| `how`   | Description         |
+| ------- | ------------------- |
+| `inner` | Intersection        |
+| `left`  | Keep all left rows  |
+| `right` | Keep all right rows |
+| `outer` | Union               |
+
 ## 7.2 `concat`  
+
+Used to stack DataFrames **vertically** or **horizontally**
+
+### Row-wise Concatenation
+```python
+pd.concat([df1, df2])
+```
+
+### Column-wise Concatenation
+```python
+pd.concat([df1, df2], axis=1)
+```
+
+### Reset index:
+```python
+pd.concat([df1, df2], ignore_index=True)
+```
+
 ## 7.3 Join Types  
+
+
+Join using index instead of column
+
+```python
+df_left.join(df_right)
+```
+
+With specific key :
+
+```python
+df_left.join(df_right.set_index("id"), on="id")
+```
 
 ---
 
