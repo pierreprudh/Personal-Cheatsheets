@@ -694,16 +694,151 @@ df_left.join(df_right.set_index("id"), on="id")
 ---
 
 # **8. Time Series Basics**
+
+Time series data is common in Data Science (logs, sensors, finance).
+
+
 ## 8.1 Datetime Conversion  
+
+Convert strings to datetime:
+
+```python
+df["date"] = pd.to_datetime(df["date"])
+```
+
+Specify format (faster & safer) :
+```python
+df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
+```
+
+Handle errors :
+```python
+df["date"] = pd.to_datetime(df["date"], errors="coerce")
+```
+
+**Set Datetime as Index**
+```python
+df = df.set_index("date")
+```
+
 ## 8.2 Resampling  
+
+Resampling aggregates data over time windows
+
+**Monthly Mean**
+```python
+monthly = df.resample("M").mean()
+```
+
+### Downsampling with Aggregation
+```python
+df.resample("W").agg({
+    "sales": "sum",
+    "users": "mean"
+})
+```
+
 ## 8.3 Rolling Windows  
+
+Rolling calculations use a moving window
+
+### Rolling Mean
+```python
+df["sales_ma7"] = df["sales"].rolling(window=7).mean()
+```
+
+### Rolling with Minimum Periods
+```python
+df["sales_ma"] = df["sales"].rolling(window=7, min_periods=1).mean()
+```
+
+### Rolling Multiple Aggregations
+```python
+df["sales_std"] = df["sales"].rolling(30).std()
+```
+
 
 ---
 
 # **9. Exploratory Data Analysis (EDA)**
+
+EDA is about **understanding your data** before modeling.
+It helps identify patterns, anomalies, and relationships.
+It's a method combining statistics and graphics
+
 ## 9.1 Descriptive Statistics  
+
+### Basic statistics :
+
+```python
+df.describe()
+```
+
+Include categorical variables :
+
+```python
+df.describe(include="all")
+```
+
+Select specific columns :
+
+```python
+df[["age", "income"]].describe()
+```
+
 ## 9.2 Correlations  
+
+### Correlation matrix:
+```python
+df.corr()
+```
+
+**Specific method :**
+```python
+df.corr(method="spearman")
+```
+
+**Quick Visualization (preview)**
+```python
+df.corr().style.background_gradient()
+```
+
+
 ## 9.3 Value Counts  
+
+This method is used a lot to extract statistical information and compute important values.
+
+**Count unique values :**
+```python
+df["city"].value_counts()
+```
+
+**Normalized (percentages) :**
+```python
+df["city"].value_counts(normalize=True)
+```
+
+**Include missing values :**
+```python
+df["city"].value_counts(dropna=False)
+```
+
+## 9.4 Outlier Detection (Basic)
+
+This method can be used to highlight outliers values(values that disproportionately influence and bias the global statistics of the population)
+
+
+Using quantiles :
+```python
+q1 = df["income"].quantile(0.25)
+q3 = df["income"].quantile(0.75)
+iqr = q3 - q1
+
+outliers = df[(df["income"] < q1 - 1.5 * iqr) |
+              (df["income"] > q3 + 1.5 * iqr)]
+```
+
+
 
 ---
 
