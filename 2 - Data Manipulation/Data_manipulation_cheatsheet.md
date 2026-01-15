@@ -838,21 +838,132 @@ outliers = df[(df["income"] < q1 - 1.5 * iqr) |
               (df["income"] > q3 + 1.5 * iqr)]
 ```
 
-
-
 ---
 
 # **10. Performance & Best Practices**
+
+Efficient pandas code is **faster, cleaner, and more scalable**.
+
 ## 10.1 Vectorization  
-## 10.2 Memory Optimization  
-## 10.3 Chaining & Readability  
+
+### Normalization
+Slow (Python loop) :
+
+```python
+df["income_norm"] = [
+    (x - df["income"].mean()) / df["income"].std()
+    for x in df["income"]
+]
+```
+
+Fast (vectorized) :
+
+```python
+df["income_norm"] = (df["income"] - df["income"].mean()) / df["income"].std()
+```
+
+## 10.2 Use categorical dtype
+
+Reduces memory and speeds up operations
+
+```python
+df["city"] = df["city"].astype("category")
+```
+
+Check memory usage :
+```python
+df.memory_usage(deep=True)
+```
+
+## 10.3 Load Only What You Need
+```python
+pd.read_csv("data.csv", usecols=["age", "income"], nrows=10000)
+```
+
+## 10.4 Chain Operations (Readability)
+```python
+df_clean = (
+    df
+    .drop_duplicates()
+    .dropna(subset=["income"])
+    .assign(income_k=lambda x: x["income"] / 1000)
+)
+```
+
+## 10.5 Copy vs View (Important)
+
+Avoid chained assignment warnings :
+```python
+df[df["age"] > 30]["senior"] = True  # No 
+df.loc[df["age"] > 30, "senior"] = True # Yes
+```
+
+## 10.6 Large Datasets
+
+- Use chunksize
+- Use Parquet instead of CSV
+- Drop unused columns early
+
+```python
+for chunk in pd.read_csv("big.csv", chunksize=100_000):
+    process(chunk)
+```
 
 ---
 
-# **11. To-Do / Advanced Topics**
-- Categorical data  
-- MultiIndex  
-- Large datasets (chunks)  
-- Integration with NumPy / SQL  
+
+# 11. One-Hot Encoding
+
+Categorical variables must be transformed before being used in most ML models.
+One-Hot Encoding is the most common technique.
+
+## 11.1 What is One-Hot Encoding?
+
+One-Hot Encoding converts a **categorical variable** into multiple binary columns
+
+Example:
+
+| city   |
+|--------|
+| Paris  |
+| London |
+| Paris  |
+
+transform to 
+
+| city_Paris | city_London |
+|-----------|-------------|
+| 1 | 0 |
+| 0 | 1 |
+| 1 | 0 |
 
 ---
+
+## 11.2 When to Use One-Hot Encoding
+
+Use when :
+- Categories are **nominal** (no order)
+- Number of unique categories is **small**
+- Model does not handle categorical data natively
+
+Be careful when :
+- High cardinality (many unique values)
+- Tree-based models (may prefer label encoding or target encoding)
+
+## 11.3 One-Hot Encoding with Pandas
+
+### Using `get_dummies`
+
+```python
+df_encoded = pd.get_dummies(df, columns=["city"])
+```
+
+Drop first column (avoid multicollinearity) :
+```python
+df_encoded = pd.get_dummies(df, columns=["city"], drop_first=True)
+```
+
+Encode a Single Column :
+```python
+pd.get_dummies(df["city"], prefix="city")
+```
