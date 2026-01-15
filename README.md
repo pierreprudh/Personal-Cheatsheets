@@ -29,6 +29,9 @@ Track learning progress over time
   |  ├── Data_manipulation_cheatsheet.md
   |  └── examples.ipynb
   |
+  ├── 3 - Vizualization
+  |  └── Visualization_cheatsheet.ipynb
+  |
   ├── Large Language Model
   |  └── Questions&Answers.md
   |  
