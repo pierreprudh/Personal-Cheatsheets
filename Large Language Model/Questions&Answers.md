@@ -1,7 +1,9 @@
 # Questions and answers about LLMs 
 
-Here are some questions that I have stumpoind appass/ask myself during lectures/reading/youtube video and I will try to keep it updated and clean with quick answer.
+Here are some questions that I have stumbled upon or asked myself during lectures, interviews, readings, and YouTube videos. I’ll try to keep this list updated and well organized, with quick answers for reference.
 
+
+---
 
 ## RAG 
 
