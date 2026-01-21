@@ -47,7 +47,7 @@ Track learning progress over time
 
 To ensure reproducibility : 
 
-```python 
+```bash 
 # Create environment
 python -m venv .venv
 
