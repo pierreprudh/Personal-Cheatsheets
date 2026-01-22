@@ -149,39 +149,271 @@ Example :
 - biological data
 
 
+## 1.5 Types of Data
+
+Understanding data types is critical because they determine :
+- which statistical methods are valid
+- which visualizations make sense
+- which ML models can be used
 
 
-## 1.2 Types of Data
-- Numerical vs Categorical
-- Discrete vs Continuous
-- Ordinal vs Nominal
-- Implications for visualization & modeling
+### 1.5.1 Numerical vs Categorical Data
+
+#### Numerical Data
+Data that represents **quantitative values**
+
+Mathematically :
+\[
+x \in \mathbb{R}
+\]
+
+Example : 
+- age / temperature / revenue
+
+So they support ***arithmetic operations** and **statistical distributions**
+
+#### Categorical Data
+Data that represents **labels or groups**
+
+Mathematically : 
+\[
+x \in \{c_1, c_2, \dots, c_k\}
+\]
+
+Example :
+- gender/places/species
+
+Categorical data **has no inherent numeric meaning**
+
+
+### 1.5.2 Discrete vs Continuous Data
+
+#### Discrete Data
+Data that takes **countable values**
+
+\[
+x \in \mathbb{Z}
+\]
+
+Examples :
+- number of users
+- number of purchases
+
+Common models :
+- Binomial distribution
+- Poisson distribution
+
+#### Continuous Data
+Data that can take **any value in an interval**.
+
+\[
+x \in \mathbb{R}
+\]
+
+Examples:
+- height/weight/time
+
+Common models :
+- Normal distribution
+- Exponential distribution
+
+### 1.5.3 Ordinal vs Nominal Data
+
+#### Nominal Data
+Categories **without intrinsic order**
+
+Examples:
+- city/color/country
+
+Key property :
+\[
+c_1 \neq c_2 \quad \text{but no ordering relation}
+\]
+
+Implications :
+- One-Hot Encoding
+- No distance or ranking
+
+
+### 1.5.4 Implications for Visualization
+
+| Data Type | Recommended Visualizations |
+|--------|---------------------------|
+| Numerical | Histogram, KDE, Boxplot, Scatter |
+| Categorical | Bar plot, Count plot |
+| Numerical vs Categorical | Boxplot, Violin plot |
+| Numerical vs Numerical | Scatter, Heatmap |
+
+
+
+### 1.5.5 Implications for Modeling
+
+| Data Type | ML Considerations |
+|--------|------------------|
+| Numerical | Scaling, normalization |
+| Categorical (nominal) | One-Hot Encoding |
+| Categorical (ordinal) | Ordered encoding |
+| Mixed | Pipelines required |
+
+Examples :
+- Linear models require numerical inputs
+- Tree-based models handle categories better
+- Distance-based models are sensitive to encoding
+
 
 ---
 
 # **2. Descriptive Statistics**
-## 2.1 Central Tendency
-- Mean
-- Median
-- Mode
-- When each one is appropriate
 
-## 2.2 Dispersion
-- Variance
-- Standard deviation
-- Range
-- Interquartile range (IQR)
+Descriptive statistics summarize and describe the **main characteristics of a dataset**.
+
+Let a dataset be :
+\[
+X = \{x_1, x_2, \dots, x_n\}
+\]
+
+## 2.1 Measures of Central Tendency
+
+Central tendency describes the **typical value** of a dataset.
+
+### Mean (Average)
+
+The arithmetic mean is defined as :
+\[
+\mu = \frac{1}{n} \sum_{i=1}^{n} x_i
+\]
+
+Properties :
+- Uses all data points
+- Sensitive to outliers
+
+Very realist when the distribution is symmetric with no outliers ! 
+
+
+### Median
+
+The median is the **middle value** when data is sorted.
+
+\[
+\text{Median}(X) =
+\begin{cases}
+x_{(n+1)/2}, & n \text{ odd} \\
+\frac{x_{(n/2)} + x_{(n/2+1)}}{2}, & n \text{ even}
+\end{cases}
+\]
+
+Properties :
+- Robust to outliers
+- Works well for skewed data
+
+It's also the go to method to fill missing values
+
+
+## 2.2 Measures of Dispersion
+
+Dispersion measures how **spread out** the data is
+
+### Range
+
+\[
+\text{Range} = \max(X) - \min(X)
+\]
+
+Simple but very sensitive to outliers
+
+
+### Variance
+Variance is the average of the squared differences from the mean, representing how far a set of numbers is spread out from their average value.
+
+Population variance :
+\[
+\sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2
+\]
+
+Sample variance ``size n`` (unbiased estimator) :
+\[
+s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2
+\]
+`
+
+
+### Standard Deviation
+
+Standard deviation is the **square root of the variance**, representing the average distance of data points from the mean in their original units.
+
+\[
+\sigma = \sqrt{\sigma^2}
+\]
+
+Same units as the data (not the squared value from the variance) => easier to interpret 
+
+
+### Interquartile Range (IQR)
+
+The Interquartile Range (IQR) is the difference between the 75th and 25th percentiles, representing the spread of the middle 50% of a dataset.
+
+\[
+\text{IQR} = Q_3 - Q_1
+\]
+
+Properties :
+- Robust to outliers
+- Used in boxplots and outlier detection
+
 
 ## 2.3 Shape of Distributions
-- Skewness
-- Kurtosis
-- Symmetry
-- Heavy tails
+
+Understanding shape is critical for :
+- model assumptions
+- transformations
+- statistical tests
+
+
+### Skewness
+
+Skewness measures **asymmetry**
+
+\[
+\text{Skewness} = \mathbb{E}\left[\left(\frac{X - \mu}{\sigma}\right)^3\right]
+\]
+
+Interpretation :
+- Skewness = 0 => symmetric
+- Positive => right-skewed
+- Negative => left-skewed
+
+### Kurtosis
+
+Kurtosis measures **tail heaviness**.
+
+\[
+\text{Kurtosis} = \mathbb{E}\left[\left(\frac{X - \mu}{\sigma}\right)^4\right]
+\]
+
+Interpretation :
+- High kurtosis => heavy tails, more outliers
+- Low kurtosis => light tails
+
+
 
 ## 2.4 Descriptive Statistics in Pandas
-- `.describe()`
-- Grouped statistics
-- Robust statistics
+
+### `pandas .describe()`
+
+```python
+df.describe()
+```
+
+
+## Link between Descriptive Statistics and Visualization 
+
+| Statistic	| Visualization|
+|-----------|--------------|
+| Mean / Median	| Histogram, KDE |
+| Variance	| Boxplot |
+| IQR	| Boxplot |
+| Skewness |	Histogram, KDE |
+| Outliers	| Boxplot |
 
 ---
 
