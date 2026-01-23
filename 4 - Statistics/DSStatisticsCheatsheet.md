@@ -418,20 +418,168 @@ df.describe()
 ---
 
 # **3. Probability Theory (Core Concepts)**
+
+Probability theory provides the mathematical framework to **model uncertainty**
+
 ## 3.1 Random Variables
-- Discrete vs Continuous
-- Probability Mass Function (PMF)
-- Probability Density Function (PDF)
 
-## 3.2 Probability Rules
-- Joint probability
-- Conditional probability
-- Independence
+A **random variable** represents a numerical outcome of a random process.
 
-## 3.3 Bayes’ Theorem
-- Intuition
-- Why it matters in ML
-- Real DS examples
+Formally:
+\[
+X : \Omega \rightarrow \mathbb{R}
+\]
+
+Where:
+- \(\Omega\) is the sample space
+- \(X\) maps outcomes to numerical values
+
+### Discrete Random Variables
+
+A random variable that takes **countable values**
+
+\[
+X \in \{x_1, x_2, \dots\}
+\]
+
+Example :
+- number of purchases
+
+
+### Continuous Random Variables
+
+A random variable that takes values in a **continuous interval**
+
+\[
+X \in \mathbb{R}
+\]
+
+Example :
+- height
+
+## 3.2 Probability Mass Function (PMF)
+
+For a discrete random variable :
+
+\[
+P(X = x) = p(x)
+\]
+
+Properties:
+\[
+0 \le p(x) \le 1
+\]
+\[
+\sum_x p(x) = 1
+\]
+
+Example :
+- Bernoulli variable (success / failure)
+
+
+## 3.3 Probability Density Function (PDF)
+
+For a continuous random variable, probabilities are defined via a **density function**
+
+\[
+P(a \le X \le b) = \int_a^b f(x)\,dx
+\]
+
+Properties :
+\[
+f(x) \ge 0
+\]
+\[
+\int_{-\infty}^{+\infty} f(x)\,dx = 1
+\]
+
+Important :
+> \(f(x)\) is **not** a probability => it is a density.
+
+## 3.4 Cumulative Distribution Function (CDF)
+
+The CDF gives the probability that a random variable is **less than or equal to** a value
+
+\[
+F(x) = P(X \le x)
+\]
+
+Properties:
+- non-decreasing
+- \(0 \le F(x) \le 1\)
+- fully characterizes a distribution
+
+## 3.5 Expected Value (Mean)
+
+The expected value represents the **long-run average**
+
+
+### Discrete Case
+
+\[
+\mathbb{E}[X] = \sum_x x \cdot p(x)
+\]
+
+### Continuous Case
+
+\[
+\mathbb{E}[X] = \int_{-\infty}^{+\infty} x \cdot f(x)\,dx
+\]
+
+
+## 3.6 Variance
+
+Variance measures **dispersion around the mean**.
+
+\[
+\mathrm{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]
+\]
+
+Equivalent form:
+\[
+\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+\]
+
+
+## 3.7 Joint Probability
+
+The probability of two random variables occurring together
+
+\[
+P(X = x, Y = y)
+\]
+
+Joint distributions capture **dependencies**
+
+
+## 3.8 Conditional Probability
+
+Probability of an event given another event occurred
+
+\[
+P(X|Y) = \frac{P(X,Y)}{P(Y)}
+\]
+
+Interpretation :
+> Our belief about \(X\) changes after observing \(Y\)
+
+
+## 3.9 Independence
+
+Two random variables are independent if:
+
+\[
+P(X,Y) = P(X)P(Y)
+\]
+
+Equivalent :
+\[
+P(X|Y) = P(X)
+\]
+
+**Why Independence Matters in ML**
+- Naive Bayes assumes conditional independence
+- Feature engineering often tries to reduce dependence 
 
 ---
 
