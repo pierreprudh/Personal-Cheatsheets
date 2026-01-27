@@ -584,19 +584,197 @@ P(X|Y) = P(X)
 ---
 
 # **4. Common Probability Distributions**
+
+Probability distributions describe **how random variables behave**
+Choosing the right distribution is essential 
+
 ## 4.1 Discrete Distributions
-- Bernoulli
-- Binomial
-- Poisson
+
+Discrete distributions model **countable outcomes**
+
+### 4.1.1 Bernoulli Distribution
+
+Models a **single binary trial**.
+
+\[
+X \sim \text{Bernoulli}(p)
+\]
+
+\[
+P(X = 1) = p,\quad P(X = 0) = 1 - p
+\]
+
+Expected value :
+\[
+\mathbb{E}[X] = p
+\]
+
+Variance :
+\[
+\mathrm{Var}(X) = p(1 - p)
+\]
+
+Example :
+- CoinFlip repetition 
+
+### 4.1.2 Binomial Distribution
+
+Models the **number of successes in \(n\) independent Bernoulli trials**
+
+\[
+X \sim \text{Binomial}(n, p)
+\]
+
+\[
+P(X = k) = \binom{n}{k} p^k (1 - p)^{n-k}
+\]
+
+Expected value :
+\[
+\mathbb{E}[X] = np
+\]
+
+Variance :
+\[
+\mathrm{Var}(X) = np(1 - p)
+\]
+
+Example :
+- gym's weight utilisation
+
+
+### 4.1.3 Poisson Distribution
+
+Models the **number of events occurring in a fixed interval**, given a known average rate
+
+\[
+X \sim \text{Poisson}(\lambda)
+\]
+
+\[
+P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}
+\]
+
+Expected value :
+\[
+\mathbb{E}[X] = \lambda
+\]
+
+Variance :
+\[
+\mathrm{Var}(X) = \lambda
+\]
+
+Example :
+- number of website visits per minute
+- number of system failures per day
+
 
 ## 4.2 Continuous Distributions
-- Uniform
-- Normal (Gaussian)
-- Exponential
 
-## 4.3 When to Use Which Distribution
-- Mapping real data to distributions
-- Assumptions and pitfalls
+Continuous distributions model **measurements on a continuous scale**.
+
+### 4.2.1 Uniform Distribution
+
+All values in an interval are *equally likely*
+
+\[
+X \sim \mathcal{U}(a, b)
+\]
+
+PDF :
+\[
+f(x) = \frac{1}{b - a}, \quad a \le x \le b
+\]
+
+Expected value :
+\[
+\mathbb{E}[X] = \frac{a + b}{2}
+\]
+
+Variance :
+\[
+\mathrm{Var}(X) = \frac{(b - a)^2}{12}
+\]
+
+Examples:
+- random initialization
+
+ML link :
+- Random sampling
+- Monte Carlo methods
+
+### 4.2.2 Normal (Gaussian) Distribution
+
+The most important distribution in statistics
+
+\[
+X \sim \mathcal{N}(\mu, \sigma^2)
+\]
+
+PDF :
+\[
+f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right)
+\]
+
+Properties :
+- symmetric around \(\mu\)
+- fully defined by mean and variance
+
+Example :
+- measurement noise
+
+ML link :
+- Linear regression assumptions
+- Squared error loss
+- Central Limit Theorem
+
+### 4.2.3 Exponential Distribution
+
+Models **time until an event occurs**
+
+\[
+X \sim \text{Exponential}(\lambda)
+\]
+
+PDF :
+\[
+f(x) = \lambda e^{-\lambda x}, \quad x \ge 0
+\]
+
+Expected value :
+\[
+\mathbb{E}[X] = \frac{1}{\lambda}
+\]
+
+Variance :
+\[
+\mathrm{Var}(X) = \frac{1}{\lambda^2}
+\]
+
+Key property (memoryless) :
+\[
+P(X > s + t \mid X > s) = P(X > t)
+\]
+
+Examples:
+- time until failure
+- waiting time between events
+
+
+## 4.3 Choosing the right distribution
+
+Always verify the normality with statistical checks. 
+Don't ignore the outliers or skewness.
+
+| Data Type | Typical Distribution |
+|--------|--------------------|
+| Binary outcome | Bernoulli |
+| Count (fixed trials) | Binomial |
+| Count (time-based) | Poisson |
+| Continuous (noise) | Normal |
+| Waiting time | Exponential |
 
 ---
 
