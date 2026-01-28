@@ -779,15 +779,143 @@ Don't ignore the outliers or skewness.
 ---
 
 # **5. Sampling & the Central Limit Theorem**
-## 5.1 Sampling Techniques
-- Random sampling
-- Stratified sampling
-- Sampling bias
 
-## 5.2 Central Limit Theorem (CLT)
-- Intuition (critical!)
-- Why averages behave normally
-- Impact on confidence intervals & tests
+Sampling is unavoidable when working with big dataset
+The Central Limit Theorem (CLT) explains **why we can still make reliable inferences** from samples
+
+## 5.1 Sampling
+
+Sampling is the process of selecting a **subset** from a population to estimate its properties
+
+Let :
+- population mean : \(\mu\)
+- population variance : \(\sigma^2\)
+- sample : \(X = \{x_1, x_2, \dots, x_n\}\)
+
+### 5.1.1 Random Sampling
+
+Each individual has an equal probability of being selected
+
+Properties :
+- unbiased estimates
+- simplest assumption in statistics
+
+Used when :
+- data is i.i.d (independent and identically distributed)
+- population is homogeneous
+
+
+### 5.1.2 Stratified Sampling
+
+Population is divided into **subgroups (strat)**, then sampled within each group
+
+Examples :
+- class-balanced datasets
+- demographic fairness
+
+Benefits :
+- lower variance
+- better representation of minorities
+
+
+### 5.1.3 Sampling Bias
+
+Occurs when the sample is **not representative**
+
+Examples :
+- selection bias
+- temporal bias
+
+Impact :
+- misleading statistics
+- poor generalization
+- invalid conclusions
+
+
+## 5.2 Sample Mean as an Estimator
+
+The sample mean is defined as :
+\[
+\bar{X} = \frac{1}{n} \sum_{i=1}^{n} x_i
+\]
+
+Properties :
+- unbiased estimator of \(\mu\)
+- variance decreases as \(n\) increases
+
+\[
+\mathbb{E}[\bar{X}] = \mu
+\]
+
+\[
+\mathrm{Var}(\bar{X}) = \frac{\sigma^2}{n}
+\]
+
+
+## 5.3 The Central Limit Theorem (CLT)
+
+### Statement
+
+Let \(X_1, X_2, \dots, X_n\) be i.i.d random variables with :
+- mean \(\mu\)
+- variance \(\sigma^2 < \infty\)
+
+Then, as \(n \to \infty\) :
+
+\[
+\frac{\bar{X} - \mu}{\sigma / \sqrt{n}}
+\;\xrightarrow{d}\;
+\mathcal{N}(0,1)
+\]
+
+
+## 5.4 Why CLT Is So Important
+
+CLT explains why :
+- confidence intervals work
+- hypothesis tests work
+- many ML losses behave nicely
+- averages are stable estimators
+
+Without CLT, inferential statistics would collapse
+
+
+## 5.5 Practical Implications in Data Science
+
+### Sample Size Matters
+
+- Small \(n\) => high uncertainty
+- Large \(n\) => stable estimates
+
+Rule of thumb :
+- \(n \ge 30\) => CLT often applies
+- but depends on distribution shape
+
+### Error Shrinks with Data
+
+Standard error :
+\[
+\text{SE} = \frac{\sigma}{\sqrt{n}}
+\]
+
+Doubling data does **not** halve error => it shrinks by \(\sqrt{2}\).
+
+## 5.6 CLT in Machine Learning
+
+CLT explains :
+- why cross-validation averages are meaningful
+- why ensemble methods reduce variance
+- why training loss converges smoothly
+
+Example :
+- Bagging = averaging weak learners → lower variance
+
+
+## 5.7 Common Misunderstandings 
+
+- CLT does **not** say the data becomes normal
+- CLT applies to the **mean**, not individual samples
+- Heavy-tailed distributions need larger \(n\)
 
 ---
 
